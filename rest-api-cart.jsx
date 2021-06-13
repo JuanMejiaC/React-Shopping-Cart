@@ -31,34 +31,10 @@ const useDataApi = (initialUrl, initialData) => {
     const fetchData = async () => {
       dispatch({ type: "FETCH_INIT" });
       try {
-        /////////////////////
-        var data1 = JSON.stringify({
-          query: `{
-          products {
-            name
-            cost
-            country
-            instock
-          }
-        }`,
-          variables: {}
-        });
-        
-        var config = {
-          method: 'post',
-          url: url,
-          headers: { 
-            'Content-Type': 'application/json'
-          },
-          data : data1
-        };
-        ////////////////////
-        // const result = await axios(url);
-       const result = await axios(config);
-        
-        console.log(result.data.data.products);
+        const result = await axios(url);
+        // console.log("FETCH FROM URl");
         if (!didCancel) {
-          dispatch({ type: "FETCH_SUCCESS", payload: result.data.data.products });
+          dispatch({ type: "FETCH_SUCCESS", payload: result.data });
         }
       } catch (error) {
         if (!didCancel) {
@@ -115,9 +91,9 @@ const Products = (props) => {
   } = ReactBootstrap;
   //  Fetch Data
   const { Fragment, useState, useEffect, useReducer } = React;
-  const [query, setQuery] = useState("http://localhost:1337/graphql");
+  const [query, setQuery] = useState("http://localhost:1337/products");
   const [{ data, isLoading, isError }, doFetch] = useDataApi(
-    "http://localhost:1337/graphql",
+    "http://localhost:1337/products",
     {
       data: [],
     }
@@ -251,7 +227,7 @@ const Products = (props) => {
       <Row>
         <form
           onSubmit={(event) => {
-            restockProducts(`http://localhost:1337/graphql`);
+            restockProducts(`http://localhost:1337/${query}`);
             // console.log(`Restock called on ${query}`);
             event.preventDefault();
           }}
